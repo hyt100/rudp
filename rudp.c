@@ -280,7 +280,6 @@ add_missing(struct rudp *U, int id) {
 
 static void
 extract_package(struct rudp *U, const uint8_t *buffer, int sz) {
-	// todo:
 	while (sz > 0) {
 		int len = buffer[0];
 		if (len > 127) {
@@ -297,6 +296,10 @@ extract_package(struct rudp *U, const uint8_t *buffer, int sz) {
 		}
 		switch (len) {
 		case TYPE_IGNORE:
+			if (U->send_again.n == 0) {
+				// request next package id
+				array_insert(&U->send_again, U->recv_id_min);
+			}
 			break;
 		case TYPE_CORRUPT:
 			U->corrupt = 1;
@@ -415,14 +418,14 @@ request_missing(struct rudp *U, struct tmp_buffer *tmp) {
 	int id = U->recv_id_min;
 	struct message *m = U->recv_queue.head;
 	while (m) {
+		assert(m->id >= id);
 		if (m->id > id) {
 			int i;
 			for (i=id;i<m->id;i++) {
 				pack_request(U, tmp, i, TYPE_REQUEST);
 			}
-		} else {
-			++id;
 		}
+		id = m->id+1;
 		m = m->next;
 	}
 }
@@ -433,6 +436,10 @@ reply_request(struct rudp *U, struct tmp_buffer *tmp) {
 	struct message *history = U->send_history.head;
 	for (i=0;i<U->send_again.n;i++) {
 		int id = U->send_again.a[i];
+		if (id < U->recv_id_min) {
+			// alreay recv, ignore
+			continue;
+		}
 		for (;;) {
 			if (history == NULL || id < history->id) {
 				// expired

@@ -73,11 +73,18 @@ main() {
 	char r1[] = { 02, 00, 00, 02, 00, 03 };
 	dump(rudp_update(U, r1, sizeof(r1), 1));
 	dump_recv(U);
-	char r2[] = { 5, 0, 1, 1 };
+	char r2[] = { 5, 0, 1, 1,
+				  5, 0, 3, 3,
+				};
 	dump(rudp_update(U, r2, sizeof(r2), 1));
 	dump_recv(U);
-	char r3[] = { 5, 0, 0, 0 };
-	dump(rudp_update(U, r3, sizeof(r3), 1));
+	char r3[] = { 5, 0, 0, 0,
+				  5, 0, 5, 5,
+				};
+	dump(rudp_update(U, r3, sizeof(r3), 0));
+	char r4[] = { 5, 0, 2, 2 };
+	dump(rudp_update(U, r4, sizeof(r4), 1));
+
 	dump_recv(U);
 
 	rudp_delete(U);
