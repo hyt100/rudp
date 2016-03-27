@@ -216,7 +216,7 @@ clear_send_expired(struct rudp *U, int tick) {
 	if (last) {
 		// free all the messages before tick
 		last->next = U->free_list;
-		U->free_list = last;
+		U->free_list = U->send_history.head;
 	}
 	U->send_history.head = m;
 	if (m == NULL) {
