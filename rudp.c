@@ -95,8 +95,8 @@ new_message(struct rudp *U, const uint8_t *buffer, int sz) {
 		U->free_list = tmp->next;
 		if (tmp->cap < sz) {
 			free(tmp);
+			tmp = NULL;
 		}
-		tmp = NULL;
 	}
 	if (tmp == NULL) {
 		int cap = sz;
