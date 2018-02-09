@@ -253,7 +253,7 @@ insert_message(struct rudp *U, int id, const uint8_t *buffer, int sz) {
 		struct message *m = U->recv_queue.head;
 		struct message **last = &U->recv_queue.head;
 		do {
-            if (m->id == id) { return; }
+            		if (m->id == id) { return; }
 			if (m->id > id) {
 				// insert here
 				struct message *tmp = new_message(U, buffer, sz);
