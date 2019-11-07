@@ -86,6 +86,7 @@ rudp_delete(struct rudp *U) {
 	free_message_list(U->free_list);
 	clear_outpackage(U);
 	free(U->send_again.a);
+	free(U);
 }
 
 static struct message *
